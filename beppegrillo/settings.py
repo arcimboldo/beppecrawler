@@ -15,3 +15,5 @@ NEWSPIDER_MODULE = 'beppegrillo.spiders'
 LOG_LEVEL='INFO'
 # ITEM_PIPELINES=['beppegrillo.pipelines.BeppegrilloPipelineMongoStore',]
 ITEM_PIPELINES=['beppegrillo.sqlpipe.SqlPipeline']
+
+SQLDB_URI="sqlite:///beppegrillo.db"

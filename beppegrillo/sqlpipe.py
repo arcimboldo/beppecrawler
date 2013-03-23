@@ -35,6 +35,7 @@ from scrapy import log
 
 # beppegrillo's import
 from beppegrillo.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
+from beppegrillo.settings import SQLDB_URI
 
 Base = declarative_base()
 
@@ -119,7 +120,7 @@ class SqlPipeline(object):
         """
         This pipeline will store all items on a sql db using SQLAlchemy.
         """
-        self.engine = sqla.create_engine("sqlite:///beppegrillo.db")
+        self.engine = sqla.create_engine(SQLDB_URI)
         # Create tables
         SqlPost.metadata.create_all(self.engine)
         SqlComment.metadata.create_all(self.engine)
