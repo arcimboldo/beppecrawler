@@ -60,12 +60,12 @@ class SqlComment(Base):
     Object used to store a comment in a DB
     """
     __tablename__ = 'comments'
-    id = sqla.Column(sqla.String(255), primary_key=True)
+    id = sqla.Column(sqla.String, primary_key=True)
     nid = sqla.Column(sqla.Integer)
-    comment_text = sqla.Column(sqla.BLOB)
-    comment_signature = sqla.Column(sqla.String(255))
+    comment_text = sqla.Column(sqla.String)
+    comment_signature = sqla.Column(sqla.String)
     posting_date = sqla.Column(sqla.DateTime)
-    post_url = sqla.Column(sqla.String(255))
+    post_url = sqla.Column(sqla.String)
     votes = sqla.Column(sqla.Integer)
     last_seen = sqla.Column(sqla.DateTime)
     desaparecido = sqla.Column(sqla.Boolean)
@@ -88,8 +88,8 @@ class SqlComment(Base):
 class SqlDowngradedComment(Base):
     __tablename__ = 'downgraded_comments'
     nid = sqla.Column(sqla.Integer, primary_key=True)
-    id = sqla.Column(sqla.String(255))
-    comment_id = sqla.Column(sqla.String(255), sqla.ForeignKey('comments.id'))
+    id = sqla.Column(sqla.String)
+    comment_id = sqla.Column(sqla.String, sqla.ForeignKey('comments.id'))
     inserted = sqla.Column(sqla.DateTime)
     votes = sqla.Column(sqla.Integer)
 
@@ -105,7 +105,7 @@ class SqlPost(Base):
     Object used to store a post in a DB
     """
     __tablename__ = 'posts'
-    url = sqla.Column(sqla.String(255), primary_key=True, nullable=False)
+    url = sqla.Column(sqla.String, primary_key=True, nullable=False)
     # posting_date = sqla.Column(sqla.DateTime)    
     last_seen = sqla.Column(sqla.DateTime)
     
