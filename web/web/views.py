@@ -50,6 +50,7 @@ td {
   border: 1px solid;
   border-collapse: collapse;
   vertical-align: top;
+  padding: 1em;
 }
 </style>
 </head>
