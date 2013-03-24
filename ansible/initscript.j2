@@ -10,7 +10,7 @@ cd $PROJDIR
 
 if [ -f $PIDFILE ]; then
     PID=$(cat $PIDFILE)
-    ps --pid $PID
+    ps --pid $PID >&/dev/null
     if [ $? -eq 0 ]; then
         exit 0
     fi
