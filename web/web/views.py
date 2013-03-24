@@ -42,6 +42,7 @@ def index(request):
     html = ["""
 <html>
 <head>
+<style type="text/css">
 .table,
 .tr,
 .td { 
@@ -49,6 +50,7 @@ def index(request):
   border-collapse: collapse;
   vertical-align: top;
 }
+</style>
 </head>
 <h1>Deleted comments (so far)</h1>
 <table>
