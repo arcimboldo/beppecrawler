@@ -1,0 +1,52 @@
+---
+- hosts: beppe
+  sudo: yes
+  vars:
+    beppehome: /var/beppe
+  tasks:
+    - name: enable multiverse repository
+      apt_repository: repo='deb http://nova.clouds.archive.ubuntu.com/ubuntu/ ${ansible_lsb.codename} multiverse' state=present
+
+    - name: update cache of the APT repository
+      apt: update_cache=yes
+
+    - name: Install required DEB packages
+      apt: pkg=$item state=installed 
+      with_items: 
+        - python-dev
+        - build-essential
+        - libxslt1-dev
+        - libxml2-dev
+        - git
+        - python-virtualenv
+        - apache2
+        - libapache2-mod-fastcgi
+
+    - name: Ensure that $beppehome directory exists
+      file: path=$beppehome state=directory
+
+    - name: download software from GIT repository
+      git: repo=git://github.com/arcimboldo/beppecrawler.git dest=$beppehome
+
+    - name: Create Virtual Environment
+      pip: name=$item virtualenv=$beppehome/venv
+      with_items:
+        - scrapy
+        - pytz
+        - django
+        - flup
+        - sqlalchemy
+
+    - name: Setup cron job to crawl beppegrillo site
+      cron: name="run beppe crawler" minute="*/10" job="bash -c '. $beppehome/venv/bin/activate; cd $beppehome/; scrapy crawl beppegrillo --logfile=beppegrillo.log; cp beppegrillo.db beppegrillo.offline.db; chmod a+r beppegrillo.offline.db'"
+
+    - name: Install initscript for django application
+      template: src=initscript.j2 dest=$beppehome/web/restartcgi mode=0755
+      tags: now
+
+    - name: Install settings script for django application
+      template: src=settings.py.j2 dest=$beppehome/web/settings.py
+      tags: now
+
+    - name: Ensure that the django application is running
+      shell: $beppehome/web/restartcgi

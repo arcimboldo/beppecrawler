@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Replace these three settings.
+VENV={{ beppehome }}/venv
+PROJDIR={{ beppehome }}/web
+PIDFILE="$PROJDIR/fscgi.pid"
+
+cd $PROJDIR
+. $VENV/bin/activate
+
+if [ -f $PIDFILE ]; then
+    PID=$(cat $PIDFILE)
+    ps --pid $PID
+    if [ $? -eq 0 ]; then
+        exit 0
+    fi
+    rm -f -- $PIDFILE
+fi
+
+exec ./manage.py runfcgi host=127.0.0.1 port=1234 pidfile=$PIDFILE
