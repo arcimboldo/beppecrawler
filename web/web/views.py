@@ -58,7 +58,7 @@ td {
     session = make_session()
     posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).all()
     for post in posts:
-        html.append("""<tr><td><a href="/post?url=%s">%s</td><td>%s</td></tr>""" % (urlquote(post.SqlPost.url), post.SqlPost.title, post[1]))
+        html.append("""<tr><td><a href="post?url=%s">%s</td><td>%s</td></tr>""" % (urlquote(post.SqlPost.url), post.SqlPost.title, post[1]))
 
     html.append("</table>")
     html.append("</html>")
