@@ -39,6 +39,13 @@ def make_session():
 
 def index(request):
 
+    try:
+        session = make_session()
+        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True).all()
+    except:
+        # Something went wrong.
+        desaparecidos = []
+
     html = ["""
 <html>
 <head>
@@ -52,17 +59,11 @@ td {
 }
 </style>
 </head>
-<h1>Deleted comments (so far)</h1>
+
+<h1>Deleted comments (so far) %d</h1>
 <table>
     <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th><th>post</th></tr>
-"""]
-    try:
-        session = make_session()
-        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True).all()
-    except:
-        # Something went wrong.
-        desaparecidos = None
-        html.append("no results found")
+""" % len(desaparecidos)]
 
     for comment in desaparecidos:
         html.append("""
@@ -84,12 +85,13 @@ td {
     <tr><th>posting date</th><th>current votes</th><th>votes before</th><th>votes after</th><th>signature</th><th>comment</th></tr>
 """)
     downgraded = session.query(SqlComment, SqlDowngradedComment).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
+    n = 0
     for comment in downgraded:
         if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
             # If comment is not downgraded anymore, we should fix it.
             session.delete(comment.SqlDowngradedComment)
             continue
-
+        n += 1
         html.append("""
     <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
             comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
@@ -102,7 +104,8 @@ td {
             ))
     html.append("""
 </table>
-""")
+%d downgraded comments found
+""" % n)
     session.commit()
 
     html.append("</html>")
