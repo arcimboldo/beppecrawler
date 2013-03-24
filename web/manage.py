@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import glob
 import os
 import site
 import sys
@@ -7,7 +8,8 @@ try:
     import settings
     # load virtualenv if set
     if settings.VIRTUALENV:
-        site.addsitedir(settings.VIRTUALENV)
+        
+        site.addsitedir(glob.glob(os.path.join(settings.VIRTUALENV, '/lib/python*/site-packages')))
 except:
     # No `settings.py` file found.
     pass
