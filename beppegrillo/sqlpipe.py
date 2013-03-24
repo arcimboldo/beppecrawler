@@ -91,7 +91,8 @@ class SqlDowngradedComment(Base):
     id = sqla.Column(sqla.String)
     comment_id = sqla.Column(sqla.String, sqla.ForeignKey('comments.id'))
     inserted = sqla.Column(sqla.DateTime)
-    votes = sqla.Column(sqla.Integer)
+    old_votes = sqla.Column(sqla.Integer)
+    cur_votes = sqla.Column(sqla.Integer)
 
     def __init__(self, comment, old_votes):
         self.id = comment.id
