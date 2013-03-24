@@ -43,12 +43,10 @@ def index(request):
 <html>
 <head>
 <style type="text/css">
-table,
 th,
 tr,
 td { 
   border: 1px solid;
-  border-collapse: collapse;
   vertical-align: top;
   padding: 1em;
 }
