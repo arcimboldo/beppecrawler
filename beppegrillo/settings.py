@@ -17,4 +17,4 @@ LOG_LEVEL='INFO'
 ITEM_PIPELINES=['beppegrillo.sqlpipe.SqlPipeline']
 
 SQLDB_URI="sqlite:///beppegrillo.db"
-SQLDB_OFFLINE_URI="sqlite:////var/beppe/beppecrawler/beppegrillo.offline.db"
+SQLDB_OFFLINE_URI="sqlite:////var/beppe/beppegrillo.offline.db"
