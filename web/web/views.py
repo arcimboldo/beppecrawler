@@ -88,7 +88,6 @@ td {
         if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
             # If comment is not downgraded anymore, we should fix it.
             session.delete(comment.SqlDowngradedComment)
-            session.commit()
             
         html.append("""
     <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
@@ -103,6 +102,7 @@ td {
     html.append("""
 </table>
 """)
+    session.commit()
 
     html.append("</html>")
     return HttpResponse(str.join('\n', html))
