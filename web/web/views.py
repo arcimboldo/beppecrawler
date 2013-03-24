@@ -67,7 +67,7 @@ td {
 
     for comment in desaparecidos:
         html.append("""
-    <tr><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
+    <tr><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
             comment.posting_date.strftime("%d/%m/%Y, %H:%M"),
             comment.votes,
             comment.when_desaparecido.strftime("%d/%m/%Y, %H:%M"),
