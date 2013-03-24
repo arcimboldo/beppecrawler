@@ -28,4 +28,10 @@ setup(
     name = "beppecrawler",
     version = "0.1",
     packages = find_packages(),
+    install_requires = [
+        'scrapy',
+        'django',
+        'sqlalchemy',
+        'pytz',
+        ]
 )
