@@ -62,7 +62,7 @@ td {
 
 <h1>Deleted comments (so far) %d</h1>
 <table>
-    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th><th>post</th></tr>
+    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>false desaparecidos?</th><th>signature</th><th>comment</th><th>post</th></tr>
 """ % len(desaparecidos)]
 
     for comment in desaparecidos:
@@ -71,6 +71,7 @@ td {
             comment.posting_date.strftime("%d/%m/%Y, %H:%M"),
             comment.votes,
             comment.when_desaparecido.strftime("%d/%m/%Y, %H:%M"),
+            comment.false_desaparecido,
             comment.comment_signature,
             comment.comment_text,
             comment.post_url, comment.post_url,
