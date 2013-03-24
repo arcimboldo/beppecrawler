@@ -43,9 +43,9 @@ def index(request):
 <html>
 <head>
 <style type="text/css">
-.table,
-.tr,
-.td { 
+table,
+tr,
+td { 
   border: 1px solid;
   border-collapse: collapse;
   vertical-align: top;
