@@ -42,11 +42,9 @@
 
     - name: Install initscript for django application
       template: src=initscript.j2 dest=$beppehome/web/restartcgi mode=0755
-      tags: now
 
     - name: Install settings script for django application
       template: src=settings.py.j2 dest=$beppehome/web/settings.py
-      tags: now
 
     - name: Ensure that the django application is running
       shell: $beppehome/web/restartcgi
