@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from web.views import index
+from web.views import index, list_posts, get_post
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -9,6 +9,8 @@ from web.views import index
 urlpatterns = patterns(
     '',
     ('^$', index),
+    ('^posts$', list_posts),
+    ('^post$', get_post),
     # Examples:
     # url(r'^$', 'web.views.home', name='home'),
     # url(r'^web/', include('web.foo.urls')),

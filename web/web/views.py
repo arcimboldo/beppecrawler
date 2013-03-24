@@ -23,6 +23,7 @@
 __docformat__ = 'reStructuredText'
 
 from django.http import HttpResponse
+from django.utils.http import urlquote, urlunquote
 
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
@@ -35,7 +36,108 @@ def make_session():
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
-    
+
+def list_posts(request):
+    html = ["""
+<html>
+<head>
+<style type="text/css">
+table { width: 100%; }
+th,
+tr,
+td { 
+  border: 1px solid;
+  vertical-align: top;
+  padding: 1em;
+}
+</style>
+</head>
+<table>
+<tr><th>post</th><th>n. of comments</th></tr>
+"""]
+    session = make_session()
+    posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).all()
+    for post in posts:
+        html.append("""<tr><td><a href="/post?url=%s">%s</td><td>%s</td></tr>""" % (urlquote(post.SqlPost.url), post.SqlPost.title, post[1]))
+
+    html.append("</table>")
+    html.append("</html>")
+    return HttpResponse(str.join('\n', html))
+
+
+def get_post(request):
+
+    url = urlunquote(request.REQUEST['url'])
+    session = make_session()
+    desaparecidos = session.query(SqlComment).filter_by(desaparecido=True,false_desaparecido=False, post_url=url).all()
+    post = session.query(SqlPost).filter_by(url=url).first()
+
+    html = ["""
+<html>
+<head>
+<style type="text/css">
+table {width: 100%%;}
+th,
+tr,
+td { 
+  border: 1px solid;
+  vertical-align: top;
+  padding: 1em;
+}
+</style>
+</head>
+
+<h1>Deleted comments (so far) %d</h1>
+<h2><a href="%s">%s</a></h2>
+<table>
+    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th></tr>
+""" % (len(desaparecidos), post.url, post.title)]
+
+    for comment in desaparecidos:
+        html.append("""
+    <tr><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td style='width: 50%%'>%s</td></tr>""" % (
+            comment.posting_date.strftime("%d/%m/%Y, %H:%M"),
+            comment.votes,
+            comment.when_desaparecido.strftime("%d/%m/%Y, %H:%M"),
+            comment.comment_signature,
+            comment.comment_text,
+            ))
+    html.append("""
+</table>
+""")
+
+    html.append("""
+<h1>Downgraded comments</h1>
+<table>
+    <tr><th>date</th><th>current votes</th><th>votes before</th><th>votes after</th><th>signature</th><th>comment</th></tr>
+""")
+    downgraded = session.query(SqlComment, SqlDowngradedComment).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
+    n = 0
+    for comment in downgraded:
+        if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
+            # If comment is not downgraded anymore, we should fix it.
+            session.delete(comment.SqlDowngradedComment)
+            continue
+        n += 1
+        html.append("""
+    <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
+            comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
+            comment.SqlComment.votes,
+            comment.SqlDowngradedComment.old_votes,
+            comment.SqlDowngradedComment.cur_votes,
+            comment.SqlComment.comment_signature,
+            comment.SqlComment.comment_text,
+            comment.SqlComment.post_url, comment.SqlComment.post_url,
+            ))
+    html.append("""
+</table>
+%d downgraded comments found
+""" % n)
+    session.commit()
+
+    html.append("</html>")
+    return HttpResponse(str.join('\n', html))
+
 
 def index(request):
 
