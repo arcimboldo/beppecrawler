@@ -27,14 +27,11 @@ from django.http import HttpResponse
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 
-import sys
-sys.path.append('/home/antonio/github/beppecrawler')
-
-from beppegrillo.settings import SQLDB_URI
+from beppegrillo.settings import SQLDB_OFFLINE_URI
 from beppegrillo.sqlpipe import SqlComment, SqlPost
 
 def make_session():
-    engine = sqla.create_engine(SQLDB_URI)
+    engine = sqla.create_engine(SQLDB_OFFLINE_URI)
     Session = sessionmaker(bind=engine)
     session = Session()
     return session
