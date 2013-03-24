@@ -88,7 +88,8 @@ td {
         if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
             # If comment is not downgraded anymore, we should fix it.
             session.delete(comment.SqlDowngradedComment)
-            
+            continue
+
         html.append("""
     <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
             comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
