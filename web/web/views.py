@@ -44,6 +44,7 @@ def index(request):
 <head>
 <style type="text/css">
 table,
+th,
 tr,
 td { 
   border: 1px solid;
