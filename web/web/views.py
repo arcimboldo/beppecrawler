@@ -85,7 +85,7 @@ td {
 """)
     downgraded = session.query(SqlComment, SqlDowngradedComment).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
     for comment in downgraded:
-        if comment.SqlComment.votes <= comment.SqlDowngradedComment.old_votes:
+        if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
             # If comment is not downgraded anymore, we should fix it.
             session.delete(comment.SqlDowngradedComment)
             session.commit()
