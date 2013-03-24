@@ -28,7 +28,7 @@ import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 
 from beppegrillo.settings import SQLDB_OFFLINE_URI
-from beppegrillo.sqlpipe import SqlComment, SqlPost
+from beppegrillo.sqlpipe import SqlComment, SqlDowngradedComment, SqlPost
 
 def make_session():
     engine = sqla.create_engine(SQLDB_OFFLINE_URI)
@@ -42,11 +42,11 @@ def index(request):
     html = ["""
 <h1>Deleted comments (so far)</h1>
 <table>
-    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th></tr>
+    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th><th>post</th></tr>
 """]
     try:
         session = make_session()
-        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True)
+        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True).all()
     except:
         # Something went wrong.
         desaparecidos = None
@@ -65,4 +65,26 @@ def index(request):
     html.append("""
 </table>
 """)
+
+    html.append("""
+<h1>Downgraded comments</h1>
+<table>
+    <tr><th>posting date</th><th>current votes</th><th>votes before</th><th>votes after</th><th>signature</th><th>comment</th></tr>
+""")
+    downgraded = session.query(SqlComment, SqlDowngradedComment.old_votes, SqlDowngradedComment.cur_votes).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
+    for comment in downgraded:
+        html.append("""
+    <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
+            comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
+            comment.SqlComment.votes,
+            comment.old_votes,
+            comment.cur_votes,
+            comment.SqlComment.comment_signature,
+            comment.SqlComment.comment_text,
+            comment.SqlComment.post_url, comment.SqlComment.post_url,
+            ))
+    html.append("""
+</table>
+""")
+
     return HttpResponse(str.join('\n', html))

@@ -97,7 +97,8 @@ class SqlDowngradedComment(Base):
         self.id = comment.id
         self.comment_id = comment.id
         self.inserted = datetime.now()
-        self.votes = int(old_votes)    
+        self.old_votes = int(old_votes)    
+        self.cur_votes = int(comment.votes)    
 
     
 class SqlPost(Base):
@@ -167,7 +168,7 @@ class SqlPipeline(object):
                 if comment.id in self.desaparecido_ids:
                     self.desaparecido_ids.remove(comment.id)
                 # Check votes.
-                if comment.votes < sqlcomment.votes:
+                if int(comment.votes) < int(sqlcomment.votes):
                     # Uh-ho, we have a downgrade!
                     log_info("Comment %s was downgraded: had %d votes, now it has %d" % (comment.id, sqlcomment.votes, comment.votes))
                     downgraded = SqlDowngradedComment(comment, sqlcomment.votes)
