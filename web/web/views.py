@@ -40,6 +40,16 @@ def make_session():
 def index(request):
 
     html = ["""
+<html>
+<head>
+.table,
+.tr,
+.td { 
+  border: 1px solid;
+  border-collapse: collapse;
+  vertical-align: top;
+}
+</head>
 <h1>Deleted comments (so far)</h1>
 <table>
     <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th><th>post</th></tr>
@@ -73,6 +83,11 @@ def index(request):
 """)
     downgraded = session.query(SqlComment, SqlDowngradedComment.old_votes, SqlDowngradedComment.cur_votes).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
     for comment in downgraded:
+        # if comment.SqlComment.votes == comment.cur_votes:
+        #     # If comment is not downgraded anymore, we should fix it.
+        #     session.delete(comment.SqlComment)
+        #     session.commit()
+            
         html.append("""
     <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
             comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
@@ -87,4 +102,5 @@ def index(request):
 </table>
 """)
 
+    html.append("</html>")
     return HttpResponse(str.join('\n', html))
