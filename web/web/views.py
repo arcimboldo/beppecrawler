@@ -41,7 +41,7 @@ def index(request):
 
     try:
         session = make_session()
-        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True).all()
+        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True,false_desaparecido=False)
     except:
         # Something went wrong.
         desaparecidos = []
