@@ -107,12 +107,14 @@ class SqlPost(Base):
     Object used to store a post in a DB
     """
     __tablename__ = 'posts'
-    url = sqla.Column(sqla.String, primary_key=True, nullable=False)
+    url = sqla.Column(sqla.String, primary_key=True, nullable=False) 
+    title = sqla.Column(sqla.String)
     # posting_date = sqla.Column(sqla.DateTime)    
     last_seen = sqla.Column(sqla.DateTime)
     
     def __init__(self, item):
         self.url = item['url']
+        self.title = item['titolo']
         # posting_date = item['data']
         self.last_seen = datetime.now()
 
