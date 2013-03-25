@@ -90,6 +90,7 @@ def get_post(request):
     context['pages'] = range(1, context['numpages']+1)
     if context['page'] < context['numpages']:
         context['nextpage'] = slicen+2
+    context['parent_url'] = request.build_absolute_uri(request.path[:-4])
 
     html = template.render(Context(context))
 

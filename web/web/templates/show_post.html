@@ -54,7 +54,7 @@
     </p>
     {% endif %}
 
-    <p>torna alla <a href="../">lista dei post</a></p>
+    <p>torna alla <a href="{{ parent_url }}">lista dei post</a></p>
 
     {% if downgraded %}
     <h2>Commenti con voto modificato</h2>
@@ -78,7 +78,7 @@
       </tr>
       {% endfor %}
     </table>
-    <p>torna alla <a href="../">lista dei post</a></p>
+    <p>torna alla <a href="{{ parent_url }}">lista dei post</a></p>
     {% endif %}
 
   </body>
