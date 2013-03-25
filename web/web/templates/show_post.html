@@ -41,12 +41,12 @@
         
     </table>
     <p>
-      page {{ page }} of {{ numpages }}. 
+      pagina {{ page }} di {{ numpages }}. 
       {% if nextpage %}
       <a href="{{baseurl}}&page={{ nextpage }}">next</a>
       {% endif %}
     </p>
-    <p>
+    <p>Vai a pagina
       {% for page in pages %}
       <a href="{{baseurl}}&page={{ page }}">{{ page }}</a>
       {% endfor %}
