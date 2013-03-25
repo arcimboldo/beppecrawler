@@ -8,8 +8,7 @@ from web.views import index, list_posts, get_post
 
 urlpatterns = patterns(
     '',
-    ('^$', index),
-    ('^posts$', list_posts),
+    ('^$', list_posts),
     ('^post$', get_post),
     # Examples:
     # url(r'^$', 'web.views.home', name='home'),

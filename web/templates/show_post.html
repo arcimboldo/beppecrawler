@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>Show post</title>
+    <style type="text/css">
+      table {width: 100%%;}
+      th,
+      tr,
+      td { 
+      border: 1px solid;
+      vertical-align: top;
+      padding: 1em;
+      text-align: left;
+      }
+    </style>
+  </head>
+
+  <body>
+    
+    <h1>{{ ndesap }} deleted comments for post 
+      <a href="{{ url }}">{{ title }}</a> (so far)</h1>
+
+    {% if comments %}
+    <table>
+      <tr>
+        <th>date</th>
+        <th>votes</th>
+        <th>when disappeared</th>
+        <th>signature</th>
+        <th>comment</th>
+      </tr>
+
+      {% for comment in comments %}
+      <tr>
+        <td>{{ comment.pdate }}</td>
+        <td>{{ comment.votes }}</td>
+        <td>{{ comment.when_dis }}</td>
+        <td>{{ comment.signature }}</td>
+        <td>{{ comment.text }}</td>        
+        {% endfor %}
+        
+    </table>
+    <p>
+      page {{ page }} of {{ numpages }}. 
+      {% if nextpage %}
+      <a href="{{baseurl}}&page={{ nextpage }}">next</a>
+      {% endif %}
+    </p>
+    <p>
+      {% for page in pages %}
+      <a href="{{baseurl}}&page={{ page }}">{{ page }}</a>
+      {% endfor %}
+    </p>
+    {% endif %}
+
+    {% if downgraded %}
+    <h2>Downgraded comments</h2>
+    <table>
+      <tr>
+        <th>date</th>
+        <th>current votes</th>
+        <th>votes before</th>
+        <th>votes after</th>
+        <th>signature</th>
+        <th>comment</th>
+      </tr>
+      {% for comment in downgraded %}
+      <tr>
+        <td>{{ comment.pdate }}</td>
+        <td>{{ comment.votes }}</td>
+        <td>{{ comment.old_votes }}</td>
+        <td>{{ comment.cur_votes }}</td>
+        <td>{{ comment.signature }}</td>
+        <td>{{ comment.text }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+
+  </body>
+</html>

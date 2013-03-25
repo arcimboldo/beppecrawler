@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <title>List posts</title>
+    <style type="text/css">
+      table { width: 100%; }
+      th,
+      tr,
+      td { 
+      border: 1px solid;
+      vertical-align: top;
+      padding: 1em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>List posts</h1>
+
+    <table>
+      {% for post in posts %}
+      <tr>
+        <td>
+          <a href="{{ baseurl }}/post?url={{ post.url }}">
+            {{ post.title }}</a>
+        </td>
+        <td>{{ post.ncomments }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

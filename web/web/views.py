@@ -22,8 +22,13 @@
 
 __docformat__ = 'reStructuredText'
 
+# django imports
 from django.http import HttpResponse
 from django.utils.http import urlquote, urlunquote
+
+# django templates
+from django.template.loader import get_template
+from django.template import Context
 
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
@@ -38,80 +43,47 @@ def make_session():
     return session
 
 def list_posts(request):
-    html = ["""
-<html>
-<head>
-<style type="text/css">
-table { width: 100%; }
-th,
-tr,
-td { 
-  border: 1px solid;
-  vertical-align: top;
-  padding: 1em;
-}
-</style>
-</head>
-<table>
-<tr><th>post</th><th>n. of comments</th></tr>
-"""]
+    template = get_template('list_posts.html')
     session = make_session()
     posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).all()
-    for post in posts:
-        html.append("""<tr><td><a href="post?url=%s">%s</td><td>%s</td></tr>""" % (urlquote(post.SqlPost.url), post.SqlPost.title, post[1]))
-
-    html.append("</table>")
-    html.append("</html>")
-    return HttpResponse(str.join('\n', html))
+    posts = [{'title': post[0].title, 'url': post[0].url, 'quotedurl': urlquote(post[0].url), 'ncomments':  post[1]} for post in posts]
+    html = template.render(Context({'posts': posts, 'baseurl': request.path }))
+    return HttpResponse(html)
 
 
 def get_post(request):
 
+    template = get_template('show_post.html')
     url = urlunquote(request.REQUEST['url'])
     session = make_session()
     desaparecidos = session.query(SqlComment).filter_by(desaparecido=True,false_desaparecido=False, post_url=url).all()
     post = session.query(SqlPost).filter_by(url=url).first()
 
-    html = ["""
-<html>
-<head>
-<style type="text/css">
-table {width: 100%%;}
-th,
-tr,
-td { 
-  border: 1px solid;
-  vertical-align: top;
-  padding: 1em;
-}
-</style>
-</head>
+    context = {'title': post.title,
+               'url': post.url,
+               'ndesap': len(desaparecidos),
+               'baseurl': request.build_absolute_uri(request.path + '?url=' + request.REQUEST['url'])}
 
-<h1>Deleted comments (so far) %d</h1>
-<h2><a href="%s">%s</a></h2>
-<table>
-    <tr><th>date</th><th>votes</th><th>when disappeared</th><th>signature</th><th>comment</th></tr>
-""" % (len(desaparecidos), post.url, post.title)]
+    comments = [{'pdate': comment.posting_date.strftime("%d/%m/%Y, %H:%M"),
+                 'votes': comment.votes,
+                 'when_dis': comment.when_desaparecido.strftime("%d/%m/%Y, %H:%M"),
+                 'signature': comment.comment_signature,
+                 'text': comment.comment_text,} for comment in desaparecidos]
 
-    for comment in desaparecidos:
-        html.append("""
-    <tr><td>%s</td><td>%d</td><td>%s</td><td>%s</td><td style='width: 50%%'>%s</td></tr>""" % (
-            comment.posting_date.strftime("%d/%m/%Y, %H:%M"),
-            comment.votes,
-            comment.when_desaparecido.strftime("%d/%m/%Y, %H:%M"),
-            comment.comment_signature,
-            comment.comment_text,
-            ))
-    html.append("""
-</table>
-""")
+    slicen = int(request.REQUEST.get('page', 1))-1
+    start = slicen*50
+    end=start+50
+    context['comments'] = comments[start:end]
+    context['page'] = slicen+1
+    context['numpages'] = len(comments)/50+1
+    context['pages'] = range(1, context['numpages']+1)
+    if context['page'] < context['numpages']:
+        context['nextpage'] = slicen+2
 
-    html.append("""
-<h1>Downgraded comments</h1>
-<table>
-    <tr><th>date</th><th>current votes</th><th>votes before</th><th>votes after</th><th>signature</th><th>comment</th></tr>
-""")
+    html = template.render(Context(context))
+
     downgraded = session.query(SqlComment, SqlDowngradedComment).join(SqlDowngradedComment, SqlDowngradedComment.comment_id==SqlComment.id)
+    context['downgraded'] = []
     n = 0
     for comment in downgraded:
         if comment.SqlComment.votes >= comment.SqlDowngradedComment.old_votes:
@@ -119,24 +91,18 @@ td {
             session.delete(comment.SqlDowngradedComment)
             continue
         n += 1
-        html.append("""
-    <tr><td>%s</td><td>%d</td><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td><a href="%s">%s</a></td></tr>""" % (
-            comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
-            comment.SqlComment.votes,
-            comment.SqlDowngradedComment.old_votes,
-            comment.SqlDowngradedComment.cur_votes,
-            comment.SqlComment.comment_signature,
-            comment.SqlComment.comment_text,
-            comment.SqlComment.post_url, comment.SqlComment.post_url,
-            ))
-    html.append("""
-</table>
-%d downgraded comments found
-""" % n)
+        context['downgraded'].append(
+            {'pdate': comment.SqlComment.posting_date.strftime("%d/%m/%Y, %H:%M"),
+             'votes': comment.SqlComment.votes,
+             'old_votes': comment.SqlDowngradedComment.old_votes,
+             'cur_votes': comment.SqlDowngradedComment.cur_votes,
+             'signature': comment.SqlComment.comment_signature,
+             'text': comment.SqlComment.comment_text,
+             })
+    context['ndown'] = n
     session.commit()
 
-    html.append("</html>")
-    return HttpResponse(str.join('\n', html))
+    return HttpResponse(html)
 
 
 def index(request):
