@@ -18,12 +18,18 @@
     <h1>List posts</h1>
 
     <table>
+      <tr>
+        <th>Post title</th>
+        <th>posted</th>
+        <th>total nr. of comments</th>
+      </tr>
       {% for post in posts %}
       <tr>
         <td>
-          <a href="{{ baseurl }}/post?url={{ post.url }}">
+          <a href="{{ baseurl }}post?url={{ post.url }}">
             {{ post.title }}</a>
         </td>
+        <td>{{ post.posted }}</td>
         <td>{{ post.ncomments }}</td>
       </tr>
       {% endfor %}

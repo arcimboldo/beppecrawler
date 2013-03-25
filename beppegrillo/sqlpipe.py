@@ -109,13 +109,13 @@ class SqlPost(Base):
     __tablename__ = 'posts'
     url = sqla.Column(sqla.String, primary_key=True, nullable=False) 
     title = sqla.Column(sqla.String)
-    # posting_date = sqla.Column(sqla.DateTime)    
+    posted = sqla.Column(sqla.DateTime)    
     last_seen = sqla.Column(sqla.DateTime)
     
     def __init__(self, item):
         self.url = item['url']
         self.title = item['titolo']
-        # posting_date = item['data']
+        self.posted = item['data']
         self.last_seen = datetime.now()
 
 
@@ -158,12 +158,12 @@ class SqlPipeline(object):
                 # No comment found with this id, add id.
                 self.session.add(comment)
             elif sqlcomment.desaparecido:
+                cmt = self.session.query(SqlComment).filter_by(id=comment.id)
                 if sqlcomment.false_desaparecido:
                     log_error("Comment %s is a *flipping* desaparecido: was considered desaparecido and found again already." % comment.id)
                 else:
                     log_error("Comment %s was considered desaparecido but it's not. Updating." % comment.id)
                     cmt.false_desaparecido=True
-                cmt = self.session.query(SqlComment).filter_by(id=comment.id)
                 cmt.desaparecido=False
                 if comment.id in self.desaparecido_ids:
                     self.desaparecido_ids.remove(comment.id)

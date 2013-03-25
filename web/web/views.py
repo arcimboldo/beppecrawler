@@ -45,9 +45,14 @@ def make_session():
 def list_posts(request):
     template = get_template('list_posts.html')
     session = make_session()
-    posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).all()
-    posts = [{'title': post[0].title, 'url': post[0].url, 'quotedurl': urlquote(post[0].url), 'ncomments':  post[1]} for post in posts]
-    html = template.render(Context({'posts': posts, 'baseurl': request.path }))
+    posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).order_by(SqlPost.posted.desc()).all()
+    posts = [{'title': post[0].title,
+              'url': post[0].url,
+              'quotedurl': urlquote(post[0].url),
+              'ncomments': post[1],
+              'posted': post[0].posted,
+              } for post in posts]
+    html = template.render(Context({'posts': posts, 'baseurl': request.build_absolute_uri(request.path) }))
     return HttpResponse(html)
 
 
@@ -62,6 +67,7 @@ def get_post(request):
     context = {'title': post.title,
                'url': post.url,
                'ndesap': len(desaparecidos),
+               'posted': post.posted,
                'baseurl': request.build_absolute_uri(request.path + '?url=' + request.REQUEST['url'])}
 
     comments = [{'pdate': comment.posting_date.strftime("%d/%m/%Y, %H:%M"),

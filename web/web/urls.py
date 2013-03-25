@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from web.views import index, list_posts, get_post
+from web.views import list_posts, get_post
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin

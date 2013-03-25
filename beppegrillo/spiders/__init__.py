@@ -83,7 +83,9 @@ class BeppeGrilloSpider(BaseSpider):
     # parsing della data
     # ERROR: this can cause an exception
     day, month, year = hxs.select('//p[@id="commenti"]').re('(\d+) (\w+) (\d+)')
-    year = int(year) + 2000 # assuming all dates are after 2000
+    year = int(year)
+    if year < 2000:
+      year += 2000
     hour, minute = hxs.select('//p[@id="commenti"]').re('(\d+):(\d+)')
     post['data'] = datetime(year, mesi.index(month) + 1, int(day), int(hour), int(minute), tzinfo=rome_timezone)
     post['commenti'] = hxs.select('//p[@id="commenti"]').re('Commenti \((\d+)\)')[0]
