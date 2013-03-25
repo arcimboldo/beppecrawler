@@ -13,7 +13,7 @@ from scrapy.selector import HtmlXPathSelector, XmlXPathSelector
 from scrapy.http import Request
 from scrapy.utils.url import canonicalize_url
 
-from beppegrillo.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
+from crawler.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
 
 rome_timezone = pytz.timezone('Europe/Rome')
 mesi = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre' ]

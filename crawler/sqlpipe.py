@@ -34,8 +34,8 @@ from sqlalchemy.orm import sessionmaker
 from scrapy import log
 
 # beppegrillo's import
-from beppegrillo.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
-from beppegrillo.settings import SQLDB_URI
+from crawler.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
+from crawler.settings import SQLDB_URI
 
 Base = declarative_base()
 

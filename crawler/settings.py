@@ -8,13 +8,13 @@
 
 BOT_NAME = 'beppegrillo'
 
-SPIDER_MODULES = ['beppegrillo.spiders']
-NEWSPIDER_MODULE = 'beppegrillo.spiders'
+SPIDER_MODULES = ['crawler.spiders']
+NEWSPIDER_MODULE = 'crawler.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 LOG_LEVEL='INFO'
-# ITEM_PIPELINES=['beppegrillo.pipelines.BeppegrilloPipelineMongoStore',]
-ITEM_PIPELINES=['beppegrillo.sqlpipe.SqlPipeline']
+# ITEM_PIPELINES=['crawler.pipelines.BeppegrilloPipelineMongoStore',]
+ITEM_PIPELINES=['crawler.sqlpipe.SqlPipeline']
 
 SQLDB_URI="sqlite:///beppegrillo.db"
-SQLDB_OFFLINE_URI="sqlite:////var/beppe/beppegrillo.offline.db"
+SQLDB_OFFLINE_URI="sqlite:////home/antonio/github/beppecrawler/beppegrillo.db"

@@ -3,7 +3,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/topics/item-pipeline.html
 
-from beppegrillo.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
+from crawler.items import BeppeGrilloCommentItem, BeppeGrilloPostItem
 from pymongo import MongoClient
 
 class BeppegrilloPipelineMongoStore(object):

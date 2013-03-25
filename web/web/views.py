@@ -33,8 +33,8 @@ from django.template import Context
 import sqlalchemy as sqla
 from sqlalchemy.orm import sessionmaker
 
-from beppegrillo.settings import SQLDB_OFFLINE_URI
-from beppegrillo.sqlpipe import SqlComment, SqlDowngradedComment, SqlPost
+from crawler.settings import SQLDB_OFFLINE_URI
+from crawler.sqlpipe import SqlComment, SqlDowngradedComment, SqlPost
 
 def make_session():
     engine = sqla.create_engine(SQLDB_OFFLINE_URI)
