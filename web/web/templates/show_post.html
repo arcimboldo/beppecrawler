@@ -16,6 +16,7 @@
   </head>
 
   <body>
+    <p>torna alla <a href="../">lista dei post</a></p>
     
     <h1>{{ ndesap }} commenti cancellati dal post
       <a href="{{ url }}">{{ title }}</a> (per ora)</h1>
@@ -53,6 +54,8 @@
     </p>
     {% endif %}
 
+    <p>torna alla <a href="../">lista dei post</a></p>
+
     {% if downgraded %}
     <h2>Commenti con voto modificato</h2>
     <table>
@@ -75,6 +78,7 @@
       </tr>
       {% endfor %}
     </table>
+    <p>torna alla <a href="../">lista dei post</a></p>
     {% endif %}
 
   </body>
