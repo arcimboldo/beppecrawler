@@ -46,13 +46,18 @@ def list_posts(request):
     template = get_template('list_posts.html')
     session = make_session()
     posts = session.query(SqlPost, sqla.func.count(SqlComment.nid)).join(SqlComment, SqlComment.post_url==SqlPost.url).group_by(SqlPost.url).order_by(SqlPost.posted.desc()).all()
-    posts = [{'title': post[0].title,
-              'url': post[0].url,
-              'quotedurl': urlquote(post[0].url),
-              'ncomments': post[1],
-              'posted': post[0].posted,
-              } for post in posts]
-    html = template.render(Context({'posts': posts, 'baseurl': request.build_absolute_uri(request.path) }))
+    all_posts = []
+    for post in posts:
+        desaparecidos = session.query(SqlComment).filter_by(desaparecido=True,false_desaparecido=False, post_url=post.SqlPost.url).all()
+        all_posts.append(
+            {'title': post[0].title,
+             'url': post[0].url,
+             'quotedurl': urlquote(post[0].url),
+             'ncomments': post[1],
+             'posted': post[0].posted,
+             'ndesaparecidos': len(desaparecidos)
+             })
+    html = template.render(Context({'posts': all_posts, 'baseurl': request.build_absolute_uri(request.path) }))
     return HttpResponse(html)
 
 

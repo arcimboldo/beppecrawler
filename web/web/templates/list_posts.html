@@ -22,6 +22,7 @@
         <th>Post title</th>
         <th>posted</th>
         <th>total nr. of comments</th>
+        <th>comments disappeared</th>
       </tr>
       {% for post in posts %}
       <tr>
@@ -31,6 +32,7 @@
         </td>
         <td>{{ post.posted }}</td>
         <td>{{ post.ncomments }}</td>
+        <td>{{ post.ndesaparecidos }}</td>
       </tr>
       {% endfor %}
     </table>
