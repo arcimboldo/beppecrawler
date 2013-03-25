@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from web.views import list_posts, get_post
+from webgui.views import list_posts, get_post
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -11,8 +11,8 @@ urlpatterns = patterns(
     ('^$', list_posts),
     ('^post$', get_post),
     # Examples:
-    # url(r'^$', 'web.views.home', name='home'),
-    # url(r'^web/', include('web.foo.urls')),
+    # url(r'^$', 'webgui.views.home', name='home'),
+    # url(r'^web/', include('webgui.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
