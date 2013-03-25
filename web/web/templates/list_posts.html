@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title>List posts</title>
+    <title>Ultimi post</title>
     <style type="text/css">
       table { width: 100%; }
       th,
@@ -15,14 +15,14 @@
   </head>
 
   <body>
-    <h1>List posts</h1>
+    <h1>Ultimi post</h1>
 
     <table>
       <tr>
-        <th>Post title</th>
-        <th>posted</th>
-        <th>total nr. of comments</th>
-        <th>comments disappeared</th>
+        <th>Titolo</th>
+        <th>Data di pubblicazione</th>
+        <th>commenti totali</th>
+        <th>commenti <i>scomparsi</i></th>
       </tr>
       {% for post in posts %}
       <tr>

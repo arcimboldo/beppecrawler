@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
   <head>
-    <title>Show post</title>
+    <title>Informazioni sul post "{{ title }}"</title>
     <style type="text/css">
       table {width: 100%%;}
       th,
@@ -17,17 +17,17 @@
 
   <body>
     
-    <h1>{{ ndesap }} deleted comments for post 
-      <a href="{{ url }}">{{ title }}</a> (so far)</h1>
+    <h1>{{ ndesap }} commenti cancellati dal post
+      <a href="{{ url }}">{{ title }}</a> (per ora)</h1>
 
     {% if comments %}
     <table>
       <tr>
-        <th>date</th>
-        <th>votes</th>
-        <th>when disappeared</th>
-        <th>signature</th>
-        <th>comment</th>
+        <th>data</th>
+        <th>voti</th>
+        <th>scomparso il</th>
+        <th>firma</th>
+        <th>testo del commento</th>
       </tr>
 
       {% for comment in comments %}
@@ -54,15 +54,15 @@
     {% endif %}
 
     {% if downgraded %}
-    <h2>Downgraded comments</h2>
+    <h2>Commenti con voto modificato</h2>
     <table>
       <tr>
-        <th>date</th>
-        <th>current votes</th>
-        <th>votes before</th>
-        <th>votes after</th>
-        <th>signature</th>
-        <th>comment</th>
+        <th>data</th>
+        <th>voti attuali</th>
+        <th>voti prima del downgrade</th>
+        <th>voti dopo il downgrade</th>
+        <th>firma</th>
+        <th>testo del commento</th>
       </tr>
       {% for comment in downgraded %}
       <tr>
