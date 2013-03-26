@@ -33,5 +33,6 @@ setup(
         'django',
         'sqlalchemy',
         'pytz',
-        ]
+        ],
+    package_data = {'webgui': ['templates/*']},
 )
