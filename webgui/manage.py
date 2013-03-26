@@ -9,7 +9,7 @@ try:
     # load virtualenv if set
     if settings.VIRTUALENV:
         
-        site.addsitedir(glob.glob(os.path.join(settings.VIRTUALENV, '/lib/python*/site-packages')))
+        site.addsitedir(glob.glob(os.path.join(settings.VIRTUALENV, 'lib/python*/site-packages')))
 except:
     # No `settings.py` file found.
     pass
