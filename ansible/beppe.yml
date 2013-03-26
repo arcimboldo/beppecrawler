@@ -1,6 +1,7 @@
 ---
 - hosts: beppe
-  sudo: yes
+  sudo: no
+  user: root
   vars:
     beppehome: /var/beppe
   tasks:
@@ -41,18 +42,36 @@
       shell: "bash -c '. $beppehome/venv/bin/activate; cd $beppehome; python setup.py install'"
 
     - name: Setup cron job to crawl beppegrillo site
-      cron: name="run beppe crawler" minute="*/10" job="bash -c '. $beppehome/venv/bin/activate; cd $beppehome/; scrapy crawl beppegrillo --logfile=beppegrillo.log; cp beppegrillo.db beppegrillo.offline.db; chmod a+r beppegrillo.offline.db'"
+      cron: name="run beppe crawler" minute="*/10" job="bash -c '. $beppehome/venv/bin/activate; rm beppegrillo.log; cd $beppehome/; scrapy crawl beppegrillo --logfile=beppegrillo.log; cp beppegrillo.db beppegrillo.offline.db; chmod a+r beppegrillo.offline.db'"
 
     - name: Install initscript for django application
-      template: src=initscript.j2 dest=$beppehome/web/restartcgi mode=0755
-
+      template: src=initscript.j2 dest=$beppehome/webgui/restartcgi mode=0755
+      
     - name: Install settings script for django application
-      template: src=settings.py.j2 dest=$beppehome/web/settings.py
+      lineinfile: dest=$beppehome/webgui/settings.py regexp='^VIRTUALENV=.*' line='VIRTUALENV="$beppehome/venv"'
+      tags: now
 
     - name: Ensure that the django application is running
-      shell: $beppehome/web/restartcgi
+      shell: $beppehome/webgui/restartcgi
 
-    - name: Setup apache
-      lineinfile: dest=/etc/apache2/httpd.conf regexp="^FastCGIExternalServer.*/var/www/beppe.cgi.*" line="FastCGIExternalServer /var/www/beppe.fcgi -host 127.0.0.1:1234"
+    - name: ensure rewrite module is installed
+      shell: a2enmod rewrite
+      notify: restart apache
 
+    - name: Setup apache (1/3)
+      lineinfile: dest=/etc/apache2/httpd.conf regexp="^FastCGIExternalServer.*beppe.fcgi.*" line="FastCGIExternalServer /var/www/beppe.fcgi -host 127.0.0.1:1234"
+      notify: restart apache
+
+    - name: Setup apache (2/3)
+      lineinfile: dest=/etc/apache2/httpd.conf regexp="^RewriteEngine on" line="RewriteEngine on"
+      notify: restart apache
+
+    - name: Setup apache (3/3)
+      lineinfile: dest=/etc/apache2/httpd.conf regexp="^RewriteRule .*beppe.*" line="RewriteRule ^(.*)$ /beppe.fcgi/$1 [QSA,L]"
+      notify: restart apache
+
+  handlers:
+    - name: restart apache
+      action: service name=apache2 state=restarted
+      
 
