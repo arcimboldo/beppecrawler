@@ -8,8 +8,8 @@ try:
     import settings
     # load virtualenv if set
     if settings.VIRTUALENV:
-        
-        site.addsitedir(glob.glob(os.path.join(settings.VIRTUALENV, 'lib/python*/site-packages')))
+        for d in glob.glob(os.path.join(settings.VIRTUALENV, 'lib/python*/site-packages')):
+            site.addsitedir(d)
 except:
     # No `settings.py` file found.
     pass
