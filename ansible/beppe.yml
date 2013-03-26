@@ -38,6 +38,9 @@
         - flup
         - sqlalchemy
 
+    - name: configure beppegrillo package
+      lineinline: dest=$beppehome/crawler/settings.py regexp=SQLDB_OFFLINE_URI.* line='SQLDB_OFFLINE_URI="sqlite:///$beppehome/beppegrillo.offline.db"'
+
     - name: Install beppegrillo package
       shell: "bash -c '. $beppehome/venv/bin/activate; cd $beppehome; python setup.py install'"
 
